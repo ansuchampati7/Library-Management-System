@@ -19,11 +19,11 @@ var host = Host.CreateDefaultBuilder(args)
         var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<LibraryDbContext>(options =>
-            options.UseSqlServer(connectionString, sqlOptions => sqlOptions.CommandTimeout(30)));
+            options.UseSqlServer(connectionString, sqlOptions => sqlOptions.CommandTimeout(30)), ServiceLifetime.Transient);
 
-        services.AddScoped<IBookService, BookService>();
-        services.AddScoped<IBorrowService, BorrowService>();
-        services.AddScoped<ILibraryApplicationService, LibraryApplicationService>();
+        services.AddTransient<IBookService, BookService>();
+        services.AddTransient<IBorrowService, BorrowService>();
+        services.AddTransient<ILibraryApplicationService, LibraryApplicationService>();
 
         services.AddLogging(logging =>
         {
