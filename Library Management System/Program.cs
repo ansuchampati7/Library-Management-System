@@ -1,4 +1,7 @@
 ﻿using Library_Management_System.Domain.Infrastructure;
+using Library_Management_System.Repository;
+using Library_Management_System.Repository.Implementations;
+using Library_Management_System.Repository.Interfaces;
 using Library_Management_System.Services;
 using Library_Management_System.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +22,12 @@ var host = Host.CreateDefaultBuilder(args)
         var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<LibraryDbContext>(options =>
-            options.UseSqlServer(connectionString, sqlOptions => sqlOptions.CommandTimeout(30)), ServiceLifetime.Transient);
+            options.UseSqlServer(connectionString, sqlOptions => sqlOptions.CommandTimeout(30)));
 
+        services.AddTransient<IBookRepository, BookRepository>();
+        services.AddTransient<IAuthorRepository, AuthorRepository>();
+        services.AddTransient<IBorrowerRepository, BorrowerRepository>();
+        services.AddTransient<IBorrowRecordRepository, BorrowRecordRepository>();
         services.AddTransient<IBookService, BookService>();
         services.AddTransient<IBorrowService, BorrowService>();
         services.AddTransient<ILibraryApplicationService, LibraryApplicationService>();

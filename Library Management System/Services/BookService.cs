@@ -1,30 +1,32 @@
 ﻿using Library_Management_System.Domain.Entities;
-using Library_Management_System.Domain.Infrastructure;
+using Library_Management_System.Repository.Interfaces;
 using Library_Management_System.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library_Management_System.Services
 {
     public class BookService : IBookService
     {
-        private readonly LibraryDbContext _context;
+        private readonly IBookRepository _bookRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public BookService(LibraryDbContext context)
+        public BookService(IBookRepository bookRepository, IAuthorRepository authorRepository)
         {
-            _context = context;
+            _bookRepository = bookRepository;
+            _authorRepository = authorRepository;
         }
 
         public async Task AddBookAsync(string title, string authorName)
         {
-            var bookExists = await _context.Books
-                    .FirstOrDefaultAsync(a => a.Title == title.ToLower() && a.Author.Name == authorName.ToLower());
+            var bookExists = await _bookRepository.GetBookByTitleAndAuthorAsync(title, authorName);
 
             if (bookExists != null)
             {
                 bookExists.TotalQuantity++;
+                _bookRepository.Update(bookExists);
             }
             else
             {
@@ -33,8 +35,7 @@ namespace Library_Management_System.Services
                     Console.WriteLine("Author name is required");
                     return;
                 }
-                var author = await _context.Authors
-                    .FirstOrDefaultAsync(a => a.Name == authorName.ToLower());
+                var author = await _authorRepository.GetAuthorByNameAsync(authorName);
 
                 if (author == null)
                 {
@@ -43,8 +44,8 @@ namespace Library_Management_System.Services
                         Name = authorName.ToLower()
                     };
 
-                    await _context.Authors.AddAsync(author);
-                    await _context.SaveChangesAsync();
+                    await _authorRepository.AddAsync(author);
+                    await _authorRepository.SaveChangesAsync();
                 }
 
                 var book = new Book
@@ -55,23 +56,22 @@ namespace Library_Management_System.Services
                     TotalQuantity = 1
                 };
 
-                await _context.Books.AddAsync(book);
+                await _bookRepository.AddAsync(book);
                 Console.WriteLine("Book Added!");
             }
-            await _context.SaveChangesAsync();
+            await _bookRepository.SaveChangesAsync();
         }
 
 
         public async Task<List<Book>> GetAllBooksAsync()
         {
-            return await _context.Books
-                .Include(b => b.Author)
-                .ToListAsync();
+            var books = await _bookRepository.GetAllAsync();
+            return books.ToList();
         }
 
         public async Task DeleteBookAsync(string tittle, string author)
         {
-            var book = await _context.Books.FirstOrDefaultAsync(x => x.Title == tittle.ToLower() && x.Author.Name == author.ToLower());
+            var book = await _bookRepository.GetBookByTitleAndAuthorAsync(tittle, author);
 
             if (book == null)
             {
@@ -80,8 +80,8 @@ namespace Library_Management_System.Services
             }
             else
             {
-                _context.Books.Remove(book);
-                await _context.SaveChangesAsync();
+                _bookRepository.Remove(book);
+                await _bookRepository.SaveChangesAsync();
                 Console.WriteLine("Book Deleted!");
             }   
         }
