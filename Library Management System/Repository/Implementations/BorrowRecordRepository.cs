@@ -10,23 +10,10 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.Repository.Implementations
 {
-    public class BorrowRecordRepository : IBorrowRecordRepository
+    public class BorrowRecordRepository : RepositoryBase<BorrowRecord>, IBorrowRecordRepository
     {
-        private readonly LibraryDbContext _context;
-
-        public BorrowRecordRepository(LibraryDbContext context)
+        public BorrowRecordRepository(LibraryDbContext context) : base(context)
         {
-            _context = context;
-        }
-
-        public async Task AddAsync(BorrowRecord entity)
-        {
-            await _context.BorrowRecords.AddAsync(entity);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
         }
 
         public async Task<BorrowRecord> GetActiveBorrowRecordAsync(int borrowerId, int bookId)

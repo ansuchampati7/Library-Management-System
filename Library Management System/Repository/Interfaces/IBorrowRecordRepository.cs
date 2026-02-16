@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.Repository.Interfaces
 {
-    public interface IBorrowRecordRepository
+    public interface IBorrowRecordRepository : IRepositoryBase<BorrowRecord>
     {
-        Task AddAsync(BorrowRecord entity);
-        Task<int> SaveChangesAsync();
         Task<BorrowRecord> GetActiveBorrowRecordAsync(int borrowerId, int bookId);
         Task<List<BorrowRecord>> GetAllActiveBorrowRecordsAsync();
     }

@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.Repository.Interfaces
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository : IRepositoryBase<Author>
     {
-        Task AddAsync(Author entity);
-        Task<int> SaveChangesAsync();
         Task<Author> GetAuthorByNameAsync(string name);
     }
 }

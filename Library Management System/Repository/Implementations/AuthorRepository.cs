@@ -9,23 +9,10 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.Repository.Implementations
 {
-    public class AuthorRepository : IAuthorRepository
+    public class AuthorRepository : RepositoryBase<Author>, IAuthorRepository
     {
-        private readonly LibraryDbContext _context;
-
-        public AuthorRepository(LibraryDbContext context)
+        public AuthorRepository(LibraryDbContext context) : base(context)
         {
-            _context = context;
-        }
-
-        public async Task AddAsync(Author entity)
-        {
-            await _context.Authors.AddAsync(entity);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
         }
 
         public async Task<Author> GetAuthorByNameAsync(string name)

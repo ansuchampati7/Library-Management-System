@@ -9,39 +9,16 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.Repository.Implementations
 {
-    public class BookRepository : IBookRepository
+    public class BookRepository : RepositoryBase<Book>, IBookRepository
     {
-        private readonly LibraryDbContext _context;
-
-        public BookRepository(LibraryDbContext context)
+        public BookRepository(LibraryDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync()
         {
             return await _context.Books.Include(b => b.Author)
                 .ToListAsync(); ;
-        }
-
-        public async Task AddAsync(Book entity)
-        {
-            await _context.Books.AddAsync(entity);
-        }
-
-        public void Update(Book entity)
-        {
-            _context.Books.Update(entity);
-        }
-
-        public void Remove(Book entity)
-        {
-            _context.Books.Remove(entity);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
         }
 
         public async Task<Book> GetBookByTitleAndAuthorAsync(string title, string authorName)
