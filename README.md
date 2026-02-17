@@ -1,7 +1,7 @@
 # Library Management System
 
 ## Tech Stack
-- .NET 8
+- .NET
 - Entity Framework Core (Code First)
 - SQL Server
 - xUnit
@@ -16,3 +16,6 @@
 
 ## Run Tests
 dotnet test
+
+## code
+please note for many places we used console.writeline insted of argument exception for better User experience
