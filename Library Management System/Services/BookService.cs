@@ -30,11 +30,6 @@ namespace Library_Management_System.Services
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(authorName))
-                {
-                    Console.WriteLine("Author name is required");
-                    return;
-                }
                 var author = await _authorRepository.GetAuthorByNameAsync(authorName);
 
                 if (author == null)
